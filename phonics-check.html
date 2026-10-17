@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>42 音 试听</title>
+<style>
+  body{margin:0;padding:16px;font-family:-apple-system,"PingFang SC",sans-serif;background:#f7f7fb;color:#222}
+  h1{font-size:18px;margin:0 0 4px}
+  p.tip{font-size:13px;color:#666;margin:0 0 14px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px}
+  button.card{background:#fff;border:none;border-radius:14px;padding:10px 4px;box-shadow:0 2px 8px rgba(0,0,0,.08);
+    font-size:26px;font-weight:700;color:#3a3a5c;cursor:pointer;transition:.12s}
+  button.card small{display:block;font-size:11px;color:#999;font-weight:400;margin-top:2px}
+  button.card.on{transform:scale(1.12);background:#ffe9a8;box-shadow:0 0 0 3px #ffb703 inset}
+  .bar{margin:0 0 14px;display:flex;gap:8px}
+  .bar button{flex:1;padding:10px;border:none;border-radius:12px;background:#4c6ef5;color:#fff;font-size:14px}
+  .bar button.gray{background:#dee2e6;color:#333}
+  .status{font-size:13px;color:#666;min-height:18px;margin-top:12px}
+</style>
+</head>
+<body>
+<h1>🔤 42 个字母音 · 逐个试听</h1>
+<p class="tip">点一个方块听一个音。听着不对的，把它的字母记下来告诉我就行。</p>
+<div class="bar">
+  <button id="playAll">▶️ 从头放一遍</button>
+  <button id="stopAll" class="gray">■ 停</button>
+</div>
+<div class="grid" id="grid"></div>
+<div class="status" id="status"></div>
+<script>
+// [文件名, 显示字母, IPA]
+const SOUNDS = [
+  ['s','s','/s/'],['a','a','/æ/'],['t','t','/t/'],['i','i','/ɪ/'],['p','p','/p/'],['n','n','/n/'],
+  ['k','c k','/k/'],['e','e','/e/'],['h','h','/h/'],['r','r','/r/'],['m','m','/m/'],['d','d','/d/'],
+  ['g','g','/g/'],['o','o','/ɒ/'],['u','u','/ʌ/'],['l','l','/l/'],['f','f','/f/'],['b','b','/b/'],
+  ['ai','ai','/eɪ/'],['j','j','/dʒ/'],['oa','oa','/əʊ/'],['ie','ie','/aɪ/'],['ee','ee','/iː/'],['or','or','/ɔː/'],
+  ['z','z','/z/'],['w','w','/w/'],['ng','ng','/ŋ/'],['v','v','/v/'],['oo','oo','/uː/'],['oo-short','oo','/ʊ/'],
+  ['y','y','/j/'],['x','x','/ks/'],['ch','ch','/tʃ/'],['sh','sh','/ʃ/'],['th','th','/θ/'],['th2','th','/ð/'],
+  ['qu','qu','/kw/'],['ou','ou','/aʊ/'],['oi','oi','/ɔɪ/'],['ue','ue','/juː/'],['er','er','/ɜː/'],['ar','ar','/ɑː/'],
+  ['ts','zz','/ts/']
+];
+const grid = document.getElementById('grid');
+const status = document.getElementById('status');
+let cur = null, seq = false;
+
+SOUNDS.forEach(([f, letter, ipa], i) => {
+  const b = document.createElement('button');
+  b.className = 'card';
+  b.dataset.file = f;
+  b.innerHTML = letter + '<small>' + ipa + '</small>';
+  b.onclick = () => { seq = false; play(i); };
+  grid.appendChild(b);
+});
+
+function play(i) {
+  if (cur) { try { cur.pause(); } catch(e){} }
+  const [f, letter, ipa] = SOUNDS[i];
+  document.querySelectorAll('.card.on').forEach(e => e.classList.remove('on'));
+  grid.children[i].classList.add('on');
+  status.textContent = `第 ${i+1}/42 个：${letter}  ${ipa}`;
+  cur = new Audio('phonics/' + f + '.mp3');
+  cur.onended = () => {
+    if (seq) { if (i + 1 < SOUNDS.length) setTimeout(() => play(i+1), 350); else { seq = false; status.textContent = '放完了'; } }
+  };
+  cur.onerror = () => { status.textContent = `❌ 缺文件 phonics/${f}.mp3`; };
+  cur.play().catch(() => { status.textContent = '点一下页面再试（浏览器要用户手势才给放音）'; });
+}
+
+document.getElementById('playAll').onclick = () => { seq = true; play(0); };
+document.getElementById('stopAll').onclick = () => { seq = false; if (cur) cur.pause(); status.textContent = '已停'; };
+</script>
+</body>
+</html>
