@@ -13,6 +13,8 @@
     display:flex; flex-direction:column; align-items:center;
     user-select:none; position:relative;
   }
+  /* 关键控件不被压扁（小屏幕时优先压缩卡片区） */
+  header, .unit-bar, .mark-row, .stats, .sound-hint, .controls { flex-shrink: 0; }
   /* ============ 漂浮装饰 ============ */
   .decor { position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:0; }
   .decor span { position:absolute; font-size:2rem; opacity:.5; animation:floaty linear infinite; }
@@ -49,7 +51,7 @@
   .unit-chip .dot.part { background:#ffd166; }
   .unit-chip .dot.none { background:#e0e0ec; }
   /* ============ 卡片 ============ */
-  .stage { flex:1; display:flex; align-items:center; justify-content:center; width:100%; padding:4px 16px; z-index:2; perspective:1400px; }
+  .stage { flex:1; min-height:0; display:flex; align-items:center; justify-content:center; width:100%; padding:4px 16px; z-index:2; perspective:1400px; }
   .card {
     width:min(86vw, 360px); height:min(50vh, 400px);
     position:relative; transform-style:preserve-3d;
@@ -98,20 +100,22 @@
     position:absolute; top:12px; right:16px; font-size:.72rem; font-weight:bold;
     padding:3px 10px; border-radius:999px; background:#f0f0f8; color:#9a9ab5;
   }
-  .badge.ok  { background:#e2f8e6; color:#41a35c; }
-  .badge.bad { background:#ffe8e0; color:#e8703a; }
+  .badge.ok   { background:#e2f8e6; color:#41a35c; }
+  .badge.half { background:#fff6e0; color:#c9950f; }
+  .badge.bad  { background:#ffe8e0; color:#e8703a; }
   /* ============ 标记按钮 ============ */
   .mark-row {
     display:flex; gap:12px; padding:8px 16px 0; z-index:3;
     width:100%; max-width:420px;
   }
   .mark-btn {
-    flex:1; border:none; border-radius:20px; padding:13px 6px;
-    font-size:1rem; font-weight:bold; font-family:inherit; cursor:pointer;
-    transition:.14s; color:#fff;
+    flex:1; border:none; border-radius:20px; padding:12px 4px;
+    font-size:.88rem; font-weight:bold; font-family:inherit; cursor:pointer;
+    transition:.14s; color:#fff; white-space:nowrap;
   }
-  .mark-btn.ok  { background:linear-gradient(135deg,#7ed957,#35b558); box-shadow:0 4px 0 #2a9147; }
-  .mark-btn.bad { background:linear-gradient(135deg,#ffb26b,#ff8c42); box-shadow:0 4px 0 #d96f28; }
+  .mark-btn.ok   { background:linear-gradient(135deg,#7ed957,#35b558); box-shadow:0 4px 0 #2a9147; }
+  .mark-btn.half { background:linear-gradient(135deg,#ffd76b,#f7b731); box-shadow:0 4px 0 #d4941a; }
+  .mark-btn.bad  { background:linear-gradient(135deg,#ffb26b,#ff8c42); box-shadow:0 4px 0 #d96f28; }
   .mark-btn:active { transform:translateY(3px); box-shadow:0 1px 0 rgba(0,0,0,.25); }
   .mark-btn.on { outline:4px solid rgba(255,255,255,.65); outline-offset:-4px; }
   /* ============ 统计行 ============ */
@@ -120,21 +124,62 @@
     padding:10px 0 4px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; justify-content:center;
   }
   .stats .ok   { color:#41a35c; }
+  .stats .half { color:#c9950f; }
   .stats .bad  { color:#e8703a; }
+  .sound-hint {
+    font-size:.72rem; color:#a8a8c0; z-index:2; padding:2px 0 6px;
+    transition:color .25s, transform .25s;
+  }
+  .sound-hint.live { color:#ff8c42; font-weight:bold; transform:scale(1.12); }
+  /* ============ 工具行 & 单词表 ============ */
+  .tool-row { padding:2px 0 4px; z-index:2; }
+  .tool-btn {
+    border:none; background:#fff; color:#8b5cf6; font-weight:bold;
+    padding:7px 16px; border-radius:999px; font-family:inherit; font-size:.8rem;
+    box-shadow:0 2px 0 rgba(139,92,246,.25); cursor:pointer;
+  }
+  .tool-btn:active { transform:translateY(2px); }
+  .list-overlay { position:fixed; inset:0; background:#fffdf8; z-index:200; display:none; flex-direction:column; }
+  .list-overlay.show { display:flex; }
+  .list-head {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 18px; border-bottom:3px solid #ffe3f0; background:#fff;
+    box-shadow:0 3px 10px rgba(0,0,0,.05);
+  }
+  .list-head .title { font-weight:bold; color:#ff6b9d; font-size:1rem; }
+  .list-head .close {
+    border:none; background:linear-gradient(135deg,#ffb3d1,#ff8ec0); color:#fff;
+    font-weight:bold; padding:8px 18px; border-radius:999px;
+    font-family:inherit; font-size:.85rem; cursor:pointer; box-shadow:0 3px 0 #e86ba5;
+  }
+  .list-head .close:active { transform:translateY(2px); box-shadow:0 1px 0 #e86ba5; }
+  .list-body { flex:1; overflow-y:auto; padding:8px 14px 40px; -webkit-overflow-scrolling:touch; }
+  .lgroup { font-weight:bold; color:#7c3aed; font-size:.9rem; margin:18px 0 6px; padding:8px 12px; background:#f3edff; border-radius:12px; }
+  .lrow { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:12px; cursor:pointer; font-size:1rem; transition:.15s; }
+  .lrow:active { background:#fff3fa; transform:scale(.99); }
+  .lrow.ok   { background:#f0fbf2; }
+  .lrow.half { background:#fffaeb; }
+  .lrow.bad  { background:#fff4ec; }
+  .lem { font-size:1.45rem; width:2rem; text-align:center; flex:0 0 auto; }
+  .len { font-weight:bold; color:#3f3f56; flex:1; }
+  .lcn { color:#a89a86; font-size:.88rem; flex:0 0 auto; }
+  .lst { width:1.5rem; text-align:center; flex:0 0 auto; }
+  .lnote { font-size:.74rem; color:#b0b0c5; padding:2px 12px 12px; line-height:1.5; }
   .reset-btn {
     border:none; background:#fff; color:#b0b0c5; font-size:.72rem; font-weight:bold;
     padding:4px 10px; border-radius:999px; font-family:inherit; cursor:pointer;
     box-shadow:0 2px 0 rgba(0,0,0,.07);
   }
   /* ============ 导航 ============ */
-  .controls { display:flex; gap:12px; padding:6px 16px 16px; z-index:2; align-items:center; justify-content:center; }
+  .controls { display:flex; gap:8px; padding:6px 10px 14px; z-index:2; align-items:center; justify-content:center; }
   .nav-btn {
-    border:none; border-radius:20px; padding:12px 22px; font-size:1.05rem; font-weight:bold;
+    border:none; border-radius:18px; padding:11px 14px; font-size:.9rem; font-weight:bold;
     font-family:inherit; cursor:pointer; background:#fff; color:#ff6b9d;
-    box-shadow:0 4px 0 rgba(255,107,157,.3); transition:.14s;
+    box-shadow:0 4px 0 rgba(255,107,157,.3); transition:.14s; white-space:nowrap;
   }
   .nav-btn:active { transform:translateY(3px); box-shadow:0 1px 0 rgba(255,107,157,.3); }
-  .nav-btn.mode { background:linear-gradient(135deg,#a78bfa,#8b5cf6); color:#fff; box-shadow:0 4px 0 #7048d6; font-size:.9rem; }
+  .nav-btn.list { background:linear-gradient(135deg,#c4b5fd,#a78bfa); color:#fff; box-shadow:0 4px 0 #7c5fd3; }
+  .nav-btn.mode { background:linear-gradient(135deg,#a78bfa,#8b5cf6); color:#fff; box-shadow:0 4px 0 #7048d6; font-size:.85rem; }
   .nav-btn.mode.on { background:linear-gradient(135deg,#fbbf24,#f59e0b); box-shadow:0 4px 0 #c47e08; }
   /* ============ 空态 ============ */
   .empty { text-align:center; color:#9a9ab5; font-size:1rem; padding:30px; z-index:2; }
@@ -151,10 +196,29 @@
     .hint { display:none; }
     .mark-btn { padding:11px 6px; font-size:.95rem; }
   }
+  .tab-bar{display:flex;gap:6px;margin:0 auto 12px;max-width:520px;background:#fff;border-radius:20px;padding:6px;box-shadow:0 4px 14px rgba(0,0,0,.1)}
+  .tab-bar a{flex:1;text-align:center;text-decoration:none;padding:13px 6px;border-radius:16px;font-weight:bold;font-size:.95rem;color:#66809b;transition:.15s}
+  .tab-bar a.active{background:linear-gradient(135deg,#5ab0ff,#3a7bd5);color:#fff;box-shadow:0 3px 10px rgba(58,123,213,.35)}
+  .def-row{text-align:center;margin:0 0 10px}
+  .phonics{margin:12px auto 0;padding:10px 14px;background:#fff;border-radius:16px;box-shadow:0 3px 12px rgba(0,0,0,.08);max-width:520px;text-align:center}
+  .ph-title{font-size:.76rem;color:#8aa;font-weight:bold;margin-bottom:6px}
+  .ph-blocks{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+  .ph-blk{font-size:1.4rem;font-weight:bold;color:#3a7bd5;padding:5px 10px;border-radius:12px;background:#eef6ff;transition:.15s}
+  .ph-blk.on{background:linear-gradient(135deg,#5ab0ff,#3a7bd5);color:#fff;transform:scale(1.25);box-shadow:0 4px 14px rgba(58,123,213,.4)}
+  #setDefault{border:none;background:#fff;border-radius:14px;padding:7px 12px;font-size:.76rem;font-weight:bold;color:#f5a623;box-shadow:0 2px 6px rgba(0,0,0,.08);cursor:pointer;font-family:inherit}
+  #setDefault.on{background:linear-gradient(135deg,#ffd76b,#f5a623);color:#fff}
+  .sync{display:inline-block;margin-left:10px;font-size:.72rem;font-weight:bold;color:#8aa;vertical-align:middle}
+  .sync.err{color:#e06b6b}
+  .sync.ok{color:#39a86b}
 </style>
 </head>
 <body>
 <div class="decor" id="decor"></div>
+
+<div class="tab-bar">
+  <a href="index.html" class="active">📇 单词闪卡</a>
+  <a href="conversation.html">💬 对话练习</a>
+</div>
 
 <header>
   <h1>🎩 Hats On Top 2 单词卡</h1>
@@ -162,6 +226,7 @@
 </header>
 
 <nav class="unit-bar" id="unitBar"></nav>
+<div class="def-row"><button id="setDefault">⭐ 把当前单元设为默认</button><span id="syncState" class="sync">☁️ 同步中…</span></div>
 
 <main class="stage" id="stage">
   <div class="empty" id="emptyBox" style="display:none">
@@ -188,17 +253,34 @@
   </div>
 </main>
 
+<div class="phonics" id="phonicsBox" style="display:none">
+  <div class="ph-title">🔤 拼一拼</div>
+  <div class="ph-blocks" id="phBlocks"></div>
+</div>
+
 <div class="mark-row" id="markRow">
-  <button class="mark-btn bad" id="btnBad">🤔 没记住</button>
-  <button class="mark-btn ok"  id="btnOk">😃 记住了</button>
+  <button class="mark-btn bad"  id="btnBad">😕 没记住</button>
+  <button class="mark-btn half" id="btnHalf">🙂 记住一半</button>
+  <button class="mark-btn ok"   id="btnOk">😃 记住了</button>
 </div>
 
 <div class="stats" id="stats"></div>
+<div class="sound-hint" id="soundHint">🔈 点一下屏幕开启声音</div>
 
 <div class="controls">
   <button class="nav-btn" id="prevBtn">⬅️</button>
-  <button class="nav-btn mode" id="reviewBtn">🔁 只练没记住</button>
+  <button class="nav-btn list" id="listBtn">📋 单词表</button>
+  <button class="nav-btn conv" id="convBtn">💬 对话</button>
+  <button class="nav-btn mode" id="reviewBtn">🔁 练不熟的</button>
   <button class="nav-btn" id="nextBtn">➡️</button>
+</div>
+
+<div class="list-overlay" id="listOverlay">
+  <div class="list-head">
+    <span class="title">📋 全部单词 · 照书核对</span>
+    <button class="close" id="listClose">✕ 关闭</button>
+  </div>
+  <div class="list-body" id="listBody"></div>
 </div>
 
 <script>
@@ -296,24 +378,79 @@ const UNITS = [
   ["song","🎵","歌曲"]]}
 ];
 
-/* ===================== 记忆存储 ===================== */
-const STORE_KEY = 'hatsOnTop2_progress_v1';
-let progress = {};            // { "hello": "ok" | "bad" }
-try {
-  const raw = localStorage.getItem(STORE_KEY);
-  if (raw) progress = JSON.parse(raw);
-} catch (e) { progress = {}; }
+/* ===================== 记忆存储（只放服务器） ===================== */
+const SYNC_URL = '/api/progress';
+let progress = {};            // 内存副本；权威数据只存在服务器
 
-function saveProgress() {
-  try { localStorage.setItem(STORE_KEY, JSON.stringify(progress)); } catch (e) {}
+let syncChain = Promise.resolve();
+let retryQueue = {};          // 上传失败的增量，自动重试
+
+function setSyncState(s, extra) {
+  const el = document.getElementById('syncState');
+  if (!el) return;
+  el.textContent = s === 'ok' ? '☁️ 已同步' + (extra || '')
+                 : (s === 'err' ? '⚠️ 没传上去，会自动重试' : '⏳ 同步中…');
+  el.className = 'sync ' + s;
 }
-function markWord(word, val) {
+
+function fetchTimeout(url, opts, ms) {         // 带超时：请求挂起也不会卡死
+  return new Promise(function (resolve, reject) {
+    var done = false;
+    var t = setTimeout(function () { if (!done) { done = true; reject(new Error('timeout')); } }, ms);
+    fetch(url, opts).then(function (r) { if (!done) { done = true; clearTimeout(t); resolve(r); } },
+                          function (e) { if (!done) { done = true; clearTimeout(t); reject(e); } });
+  });
+}
+
+function postSet(set, del) {                    // 增量上传（串行，不会互相覆盖）
+  if (!Object.keys(set).length && !(del && del.length)) return;
+  var body = {};
+  if (Object.keys(set).length) body.set = set;
+  if (del && del.length) body.del = del;
+  syncChain = syncChain.then(function () {
+    return fetchTimeout(SYNC_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    }, 8000).then(function (r) { return r.json(); }).then(function (j) {
+      if (!(j && j.ok)) throw new Error('server');
+      setSyncState('ok', ' · ' + Object.keys(progress).length + ' 词');
+    }).catch(function () {
+      Object.keys(set || {}).forEach(function (k) { retryQueue[k] = set[k]; });   // 失败入队重试
+      setSyncState('err');
+      setTimeout(flushRetry, 4000);
+    });
+  });
+}
+
+function flushRetry() {
+  if (!Object.keys(retryQueue).length) return;
+  var set = retryQueue; retryQueue = {};
+  postSet(set);
+}
+
+function pullProgress() {                       // 打开页面 → 拉服务器那份
+  setSyncState('busy');
+  fetchTimeout(SYNC_URL + '?_=' + Date.now(), { cache: 'no-store' }, 8000)
+    .then(function (r) { return r.json(); }).then(function (j) {
+      if (j && j.ok && j.data && typeof j.data === 'object') {
+        progress = j.data;
+        setSyncState('ok', ' · ' + Object.keys(progress).length + ' 词');
+        buildUnitBar(); updateStats(); showCard(false);
+      } else { setSyncState('err'); }
+    }).catch(function () { setSyncState('err'); });
+}
+
+function markWord(word, val) {                  // 标一个 → 立刻传这一个
   progress[word] = val;
-  saveProgress();
+  var s = {}; s[word] = val;
+  postSet(s);
 }
 
 /* ===================== 状态 ===================== */
-let deck = [], idx = 0, flipped = false, curUnit = 0, reviewOnly = false;
+let deck = [], idx = 0, flipped = false, reviewOnly = false;
+let curUnit = Number(localStorage.getItem('hot2_card_default') || 0);
+const DEF_KEY = 'hot2_card_default';
 const $ = id => document.getElementById(id);
 const card = $('card');
 
@@ -338,28 +475,33 @@ function unitWords(unitId) {
   if (unitId === 0) { let r = []; UNITS.forEach(u => r = r.concat(u.words)); return r; }
   return UNITS[unitId-1].words;
 }
-function masteryOf(unitId) {              // 返回 {ok, bad, total, unmarked}
+function masteryOf(unitId) {              // 返回 {ok, half, bad, total, unmarked}
   const ws = unitWords(unitId);
-  let ok = 0, bad = 0;
-  ws.forEach(w => { const p = progress[w[0]]; if (p === 'ok') ok++; else if (p === 'bad') bad++; });
-  return { ok, bad, total: ws.length, unmarked: ws.length - ok - bad };
+  let ok = 0, half = 0, bad = 0;
+  ws.forEach(w => {
+    const p = progress[w[0]];
+    if (p === 'ok') ok++; else if (p === 'half') half++; else if (p === 'bad') bad++;
+  });
+  return { ok, half, bad, total: ws.length, unmarked: ws.length - ok - half - bad };
 }
 
 /* ===================== 单元按钮 ===================== */
 function buildUnitBar() {
   const bar = $('unitBar');
   bar.innerHTML = '';
+  const def = Number(localStorage.getItem(DEF_KEY) || 0);
   const mk = (label, val) => {
     const b = document.createElement('button');
     b.className = 'unit-chip' + (val === curUnit ? ' active' : '');
     const m = masteryOf(val);
     const dotCls = m.total && m.ok === m.total ? '' : (m.ok > 0 ? 'part' : 'none');
-    b.innerHTML = label + '<span class="dot ' + dotCls + '"></span>';
+    b.innerHTML = label + (val === def ? ' ⭐' : '') + '<span class="dot ' + dotCls + '"></span>';
     b.onclick = e => {
       e.stopPropagation();
       curUnit = val;
       buildUnitBar();
       buildDeck();
+      updateDefBtn();
     };
     bar.appendChild(b);
   };
@@ -367,11 +509,27 @@ function buildUnitBar() {
   UNITS.forEach(u => mk('U' + u.id, u.id));
 }
 
+function updateDefBtn(){
+  const def = Number(localStorage.getItem(DEF_KEY) || 0);
+  const on = (curUnit === def);
+  $('setDefault').textContent = on ? ('⭐ 默认：' + (curUnit === 0 ? '全部' : 'U' + curUnit)) : '⭐ 把当前单元设为默认';
+  $('setDefault').classList.toggle('on', on);
+}
+
 /* ===================== 卡组 ===================== */
+function shuffle(a) {
+  const r = a.slice();
+  for (let i = r.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const t = r[i]; r[i] = r[j]; r[j] = t;
+  }
+  return r;
+}
+
 function buildDeck() {
   let words = unitWords(curUnit).map(w => ({en:w[0], em:w[1], cn:w[2]}));
-  if (reviewOnly) words = words.filter(w => progress[w.en] === 'bad');
-  deck = words;
+  if (reviewOnly) words = words.filter(w => progress[w.en] === 'bad' || progress[w.en] === 'half');
+  deck = shuffle(words);          // 仅在当前单元范围内打乱
   idx = 0;
   showCard(true);
   updateStats();
@@ -380,6 +538,7 @@ function buildDeck() {
 /* ===================== 渲染 ===================== */
 function showCard(reset) {
   const stage = $('stage');
+  if (typeof hidePhonics === 'function') hidePhonics();
   if (!deck.length) {
     card.style.display = 'none';
     $('emptyBox').style.display = 'block';
@@ -400,8 +559,8 @@ function showCard(reset) {
 
   // 标记徽章
   const p = progress[w.en];
-  const cls = p === 'ok' ? 'ok' : (p === 'bad' ? 'bad' : '');
-  const txt = p === 'ok' ? '已记住 ✓' : (p === 'bad' ? '要复习 ⟳' : '');
+  const cls = p === 'ok' ? 'ok' : (p === 'half' ? 'half' : (p === 'bad' ? 'bad' : ''));
+  const txt = p === 'ok' ? '已记住 ✓' : (p === 'half' ? '半熟 🙂' : (p === 'bad' ? '要复习 ⟳' : ''));
   ['badgeF','badgeB'].forEach(id => { const el=$(id); el.className = 'badge ' + cls; el.textContent = txt; });
 
   const em = $('wordEmoji');
@@ -418,37 +577,131 @@ function updateStats() {
   $('stats').innerHTML =
     scope + ' · ' + cur +
     ' &nbsp;|&nbsp; 😃 <span class="ok">' + m.ok + '</span>' +
-    ' &nbsp; 🤔 <span class="bad">' + m.bad + '</span>' +
-    ' &nbsp; 未标 ' + m.unmarked + ' / ' + m.total +
+    ' &nbsp; 🙂 <span class="half">' + m.half + '</span>' +
+    ' &nbsp; 😕 <span class="bad">' + m.bad + '</span>' +
+    ' &nbsp; 未标 ' + m.unmarked + '/' + m.total +
     ' <button class="reset-btn" id="resetBtn">重置本组</button>';
   const rb = $('resetBtn');
   if (rb) rb.onclick = e => {
     e.stopPropagation();
     if (!confirm('清空「' + scope + '」的记住/没记住记录？')) return;
-    unitWords(curUnit).forEach(w => { delete progress[w[0]]; });
-    saveProgress(); buildUnitBar(); buildDeck();
+    const delWords = [];
+    unitWords(curUnit).forEach(w => { if (w[0] in progress) { delWords.push(w[0]); delete progress[w[0]]; } });
+    postSet({}, delWords); buildUnitBar(); buildDeck();
   };
 }
 
-/* ===================== 语音 ===================== */
-let voice = null;
+/* ===================== 声音引擎（语音朗读 + 音效） ===================== */
+let voice = null, audioCtx = null, unlocked = false;
+
 function pickVoice() {
+  if (!('speechSynthesis' in window)) return;
   const vs = speechSynthesis.getVoices();
   if (!vs.length) return;
-  voice = vs.find(v => /en-US/i.test(v.lang) && /Samantha|Google US English|Karen|Zira|Aria/i.test(v.name))
-       || vs.find(v => /en-US/i.test(v.lang))
+  voice = vs.find(v => /en[-_]US/i.test(v.lang) && /Samantha|Google US English|Karen|Zira|Aria|Allison|Nicky/i.test(v.name))
+       || vs.find(v => /en[-_]US/i.test(v.lang))
        || vs.find(v => /^en/i.test(v.lang)) || null;
+  updateSoundHint();
 }
-if ('speechSynthesis' in window) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+if ('speechSynthesis' in window) {
+  pickVoice();
+  speechSynthesis.onvoiceschanged = pickVoice;
+  setTimeout(pickVoice, 400);      // iOS 上 voices 常常延迟返回
+  setTimeout(pickVoice, 1500);
+}
+
+/* iOS/Safari 必须由用户手势"解锁"音频，否则朗读全程无声 */
+function unlockAudio() {
+  if (unlocked) return;
+  unlocked = true;
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (AC && !audioCtx) audioCtx = new AC();
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    if ('speechSynthesis' in window) {           // 预热语音引擎
+      const u = new SpeechSynthesisUtterance(' ');
+      u.volume = 0; u.rate = 1;
+      speechSynthesis.speak(u);
+    }
+  } catch (e) {}
+  updateSoundHint();
+}
+['touchstart','mousedown','keydown','click'].forEach(ev =>
+  document.addEventListener(ev, unlockAudio, { passive: true })
+);
+
+/* 音效：Web Audio 合成，无需外部文件（即使 TTS 坏掉孩子也能听到反馈） */
+function beep(type) {
+  try {
+    if (!audioCtx) return;
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const now = audioCtx.currentTime;
+    const notes = type === 'ok'   ? [880, 1320]
+                : type === 'half' ? [660, 990]
+                : type === 'bad'  ? [320, 220]
+                : type === 'flip' ? [620] : [440];
+    notes.forEach((f, i) => {
+      const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.type = 'sine'; o.frequency.value = f;
+      const t0 = now + i * 0.11;
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.linearRampToValueAtTime(0.2, t0 + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.25);
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start(t0); o.stop(t0 + 0.3);
+    });
+  } catch (e) {}
+}
+
+/* 朗读：优先播放预生成音频（任何浏览器都能播），失败才回退浏览器 TTS */
+let speakSeq = 0;
+let curAudio = null;
+
+function audioKey(text) {
+  return String(text).toLowerCase().replace(/[^a-z0-9]/g, '_');
+}
+
 function speak(text) {
+  flashSpeak();
+  const seq = ++speakSeq;
+  try {
+    if (curAudio) { try { curAudio.pause(); } catch (e) {} curAudio = null; }
+    const a = new Audio('audio/' + audioKey(text) + '.mp3');
+    curAudio = a;
+    a.onerror = () => { if (seq === speakSeq) ttsSpeak(text); };
+    const p = a.play();
+    if (p && p.catch) p.catch(() => { if (seq === speakSeq) ttsSpeak(text); });
+    return;
+  } catch (e) {}
+  ttsSpeak(text);
+}
+
+function ttsSpeak(text) {
   if (!('speechSynthesis' in window)) return;
   try {
     speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'en-US'; u.rate = 0.8; u.pitch = 1.15; u.volume = 1;
-    if (voice) u.voice = voice;
-    speechSynthesis.speak(u);
-  } catch(e) {}
+    setTimeout(() => {
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-US'; u.rate = 0.8; u.pitch = 1.15; u.volume = 1;
+      if (voice) u.voice = voice;
+      speechSynthesis.speak(u);
+    }, 90);
+  } catch (e) {}
+}
+
+/* 声音状态提示（方便排查无声问题） */
+function updateSoundHint(msg) {
+  const el = document.getElementById('soundHint');
+  if (!el) return;
+  if (msg) { el.textContent = msg; return; }
+  if (!unlocked) { el.textContent = '🔈 点一下屏幕开启声音'; return; }
+  el.textContent = '🔊 声音已开启（点卡片听发音）';
+}
+function flashSpeak() {
+  const el = document.getElementById('soundHint');
+  if (!el) return;
+  el.classList.add('live');
+  setTimeout(() => el.classList.remove('live'), 700);
 }
 
 /* ===================== 翻面 ===================== */
@@ -456,41 +709,119 @@ function flip() {
   if (!deck.length) return;
   flipped = !flipped;
   card.classList.toggle('flipped', flipped);
+  beep('flip');
   if (flipped) speak(deck[idx].en);
 }
 card.addEventListener('click', e => { if (e.target.id !== 'speakBtn') flip(); });
 $('speakBtn').addEventListener('click', e => { e.stopPropagation(); if (deck.length) speak(deck[idx].en); });
 
+/* ===================== 字母音拼读 ===================== */
+let PHONICS = {};
+fetch('phonics.json', {cache: 'no-cache'}).then(r => r.json()).then(d => {
+  PHONICS = {};
+  const units = d.units || {};
+  for (const k in units) Object.assign(PHONICS, units[k].words || {});
+}).catch(() => {});
+
+const IPA_SLUG = {
+  // 短元音
+  'æ':'a','e':'e','ɪ':'i','ɒ':'o','ʌ':'u','ʊ':'oo-short','ə':'er','i':'ee',
+  // 长元音 / 双元音
+  'iː':'ee','uː':'oo','eɪ':'ai','aɪ':'ie','əʊ':'oa','aʊ':'ou','ɔɪ':'oi',
+  'ɔː':'or','ɑː':'ar','ɜː':'er','juː':'ue','ɪə':'eer','eə':'air','ʊə':'oor',
+  // 辅音
+  'b':'b','d':'d','f':'f','g':'g','h':'h','dʒ':'j','k':'k','l':'l','m':'m',
+  'n':'n','ŋ':'ng','p':'p','r':'r','s':'s','t':'t','v':'v','w':'w','j':'y',
+  'z':'z','ʃ':'sh','tʃ':'ch','θ':'th','ð':'th2','kw':'qu','ts':'ts'
+};
+function toSlug(ipa) { return IPA_SLUG[ipa] || 'x'; }
+
+let phAudio = null, phDone = null;
+function hidePhonics(keepDone) {
+  const box = $('phonicsBox');
+  if (box) box.style.display = 'none';
+  if (phAudio) { try { phAudio.pause(); } catch (e) {} phAudio = null; }
+  if (!keepDone) phDone = null;
+}
+function showPhonics(word, onDone) {
+  const blocks = PHONICS[word];
+  const box = $('phonicsBox'), wrap = $('phBlocks');
+  if (!box || !wrap) return false;
+  if (!blocks) { hidePhonics(); return false; }
+  wrap.innerHTML = blocks.map(b => '<span class="ph-blk">' + b[0] + '</span>').join('');
+  box.style.display = 'block';
+  phDone = onDone || null;
+  playPhonics(word, blocks);
+  return true;
+}
+function playPhonics(word, blocks) {
+  const wrap = $('phBlocks');
+  if (!wrap) return;
+  let i = 0;
+  const step = () => {
+    for (let k = 0; k < wrap.children.length; k++) wrap.children[k].classList.remove('on');
+    if (i >= blocks.length) {
+      // 音素念完 → 整词念一遍 → 再交还控制权
+      setTimeout(() => {
+        speak(word);
+        setTimeout(() => { const f = phDone; phDone = null; if (f) f(); }, 1100);
+      }, 160);
+      return;
+    }
+    const el = wrap.children[i];
+    if (el) el.classList.add('on');
+    if (!blocks[i][1]) { i++; setTimeout(step, 120); return; }   // 静音 e：只看不听
+    const a = new Audio('phonics/' + toSlug(blocks[i][1]) + '.mp3');
+    phAudio = a;
+    const done = () => { i++; setTimeout(step, 90); };
+    a.onended = done; a.onerror = done;
+    a.play().catch(done);
+  };
+  step();
+}
+
 /* ===================== 标记 ===================== */
+function advance(w, val) {
+  if (reviewOnly) {
+    // 复习模式：重建队列，已记住的自动移出；记不住的继续留在队里
+    const keep = (progress[w.en] === 'bad' || progress[w.en] === 'half');
+    const nextDeck = unitWords(curUnit).map(x => ({en:x[0], em:x[1], cn:x[2]}))
+                        .filter(x => progress[x.en] === 'bad' || progress[x.en] === 'half');
+    deck = shuffle(nextDeck);
+    if (deck.length) {
+      if (keep) { idx = 0; }                 // 还不够熟 → 从头再来一遍
+      else { idx = Math.min(idx, deck.length - 1); }
+      showCard(true);
+    } else {
+      idx = 0; showCard(true);
+    }
+    updateStats();
+  } else {
+    go(1);
+  }
+}
 function mark(val) {
   if (!deck.length) return;
   const w = deck[idx];
   markWord(w.en, val);
-  if (val === 'ok') flyStars(); else card.classList.add('wrong');
+  beep(val);
+  if (val === 'ok') flyStars(6);
+  else if (val === 'half') flyStars(3);
+  else card.classList.add('wrong');
   if (val === 'bad') setTimeout(() => card.classList.remove('wrong'), 520);
   buildUnitBar();
-  setTimeout(() => {
-    if (reviewOnly) {
-      // 复习模式：重建队列，已记住的自动移出；记不住的继续留在队里
-      const keep = progress[w.en] === 'bad';
-      const nextDeck = unitWords(curUnit).map(x => ({en:x[0], em:x[1], cn:x[2]}))
-                          .filter(x => progress[x.en] === 'bad');
-      deck = nextDeck;
-      if (deck.length) {
-        if (keep) { idx = 0; }                 // 还不够熟 → 从头再来一遍
-        else { idx = Math.min(idx, deck.length - 1); }
-        showCard(true);
-      } else {
-        idx = 0; showCard(true);
-      }
-      updateStats();
-    } else {
-      go(1);
-    }
-  }, val === 'ok' ? 300 : 520);
+  if (val === 'bad') {
+    // 没记住 → 先把这个词一个音一个音拼给他听，念完再翻下一张
+    const shown = showPhonics(w.en, () => advance(w, val));
+    if (shown) return;
+  } else {
+    hidePhonics();
+  }
+  setTimeout(() => advance(w, val), val === 'ok' ? 300 : 400);
 }
-function flyStars() {
-  for (let i = 0; i < 6; i++) {
+function flyStars(n) {
+  n = n || 6;
+  for (let i = 0; i < n; i++) {
     const s = document.createElement('div');
     s.className = 'flystar';
     s.textContent = ['⭐','🌟','✨','💫'][i % 4];
@@ -501,8 +832,15 @@ function flyStars() {
     setTimeout(() => s.remove(), 1100);
   }
 }
-$('btnOk').onclick  = e => { e.stopPropagation(); mark('ok'); };
-$('btnBad').onclick = e => { e.stopPropagation(); mark('bad'); };
+$('btnOk').onclick   = e => { e.stopPropagation(); mark('ok'); };
+$('btnHalf').onclick = e => { e.stopPropagation(); mark('half'); };
+$('btnBad').onclick  = e => { e.stopPropagation(); mark('bad'); };
+// 点拼读面板 = 重听一遍（孩子不用读字，直接点）
+const phBoxEl = $('phonicsBox');
+if (phBoxEl) phBoxEl.addEventListener('click', e => {
+  e.stopPropagation();
+  if (deck.length) showPhonics(deck[idx].en, null);
+});
 
 /* ===================== 切换 ===================== */
 function go(step) {
@@ -522,7 +860,8 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft')  go(-1);
   if (e.key === ' ') { e.preventDefault(); flip(); }
   if (e.key === '1') mark('ok');
-  if (e.key === '2') mark('bad');
+  if (e.key === '2') mark('half');
+  if (e.key === '3') mark('bad');
 });
 
 let tx = 0, ty = 0;
@@ -538,7 +877,7 @@ $('reviewBtn').onclick = e => {
   e.stopPropagation();
   reviewOnly = !reviewOnly;
   $('reviewBtn').classList.toggle('on', reviewOnly);
-  $('reviewBtn').textContent = reviewOnly ? '🔁 复习中' : '🔁 只练没记住';
+  $('reviewBtn').textContent = reviewOnly ? '🔁 复习中' : '🔁 练不熟的';
   buildDeck();
 };
 
@@ -557,9 +896,78 @@ function confetti() {
   }
 }
 
+/* ===================== 单词表：按单元查看全部 ===================== */
+function openList() {
+  const body = $('listBody');
+  body.innerHTML = '';
+
+  const note = document.createElement('div');
+  note.className = 'lnote';
+  note.textContent = '共 10 单元 302 词 · 来源：Macmillan 官方 Scope & Sequence · 点任意单词可跳到该卡';
+  body.appendChild(note);
+
+  UNITS.forEach(u => {
+    const g = document.createElement('div');
+    g.className = 'lgroup';
+    g.textContent = 'U' + u.id + ' · ' + u.title + ' — ' + u.cn + '（' + u.words.length + '词）';
+    body.appendChild(g);
+    u.words.forEach(w => {
+      const p = progress[w[0]];
+      const row = document.createElement('div');
+      row.className = 'lrow' + (p === 'ok' ? ' ok' : (p === 'half' ? ' half' : (p === 'bad' ? ' bad' : '')));
+      row.innerHTML =
+        '<span class="lem">' + w[1] + '</span>' +
+        '<span class="len">' + w[0] + '</span>' +
+        '<span class="lcn">' + w[2] + '</span>' +
+        '<span class="lst">' + (p === 'ok' ? '😃' : (p === 'half' ? '🙂' : (p === 'bad' ? '😕' : ''))) + '</span>';
+      row.onclick = ev => { ev.stopPropagation(); jumpTo(u.id, w[0]); };
+      body.appendChild(row);
+    });
+  });
+
+  $('listOverlay').classList.add('show');
+  body.scrollTop = 0;
+}
+
+function jumpTo(unitId, wordEn) {
+  reviewOnly = false;
+  $('reviewBtn').classList.remove('on');
+  $('reviewBtn').textContent = '🔁 练不熟的';
+  curUnit = unitId;
+  buildUnitBar();
+  buildDeck();
+  const i = deck.findIndex(x => x.en === wordEn);
+  if (i >= 0) { idx = i; showCard(true); updateStats(); }
+  $('listOverlay').classList.remove('show');
+  setTimeout(() => speak(wordEn), 250);
+}
+
+$('listBtn').onclick = e => { e.stopPropagation(); openList(); };
+$('convBtn').onclick = e => { e.stopPropagation(); location.href = 'conversation.html'; };
+$('setDefault').onclick = e => {
+  e.stopPropagation();
+  localStorage.setItem(DEF_KEY, String(curUnit));
+  buildUnitBar();
+  updateDefBtn();
+};
+$('listClose').onclick = e => { e.stopPropagation(); $('listOverlay').classList.remove('show'); };
+
 /* ===================== 启动 ===================== */
 buildUnitBar();
 buildDeck();
+updateSoundHint();
+updateDefBtn();
+pullProgress();
+
+/* 点「声音状态」可直接测试声音（排查用） */
+const soundEl = $('soundHint');
+soundEl.style.cursor = 'pointer';
+soundEl.onclick = e => {
+  e.stopPropagation();
+  unlockAudio();
+  beep('ok');
+  speak('Hello!');
+};
 </script>
 </body>
 </html>

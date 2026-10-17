@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>💬 对话练习 · Hats On Top 2</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+  background:linear-gradient(160deg,#e8f4ff,#fff5e8);min-height:100vh;padding:10px;padding-bottom:96px}
+header{display:flex;align-items:center;gap:10px;padding:6px 4px 10px}
+header h1{font-size:1.1rem;margin:0;flex:1;text-align:center;color:#30506e}
+#back{border:none;background:#fff;border-radius:14px;padding:8px 12px;font-size:.85rem;
+  font-weight:bold;color:#3a7bd5;box-shadow:0 2px 6px rgba(0,0,0,.08);cursor:pointer;font-family:inherit}
+.unit-bar{display:flex;gap:6px;overflow-x:auto;padding:2px 2px 8px;-webkit-overflow-scrolling:touch}
+.unit-bar button{flex:0 0 auto;border:none;background:#fff;border-radius:14px;padding:8px 12px;
+  font-size:.78rem;font-weight:bold;color:#66809b;box-shadow:0 2px 5px rgba(0,0,0,.06);cursor:pointer;
+  font-family:inherit;white-space:nowrap}
+.unit-bar button.active{background:linear-gradient(135deg,#5ab0ff,#3a7bd5);color:#fff}
+.mode-bar{display:flex;gap:8px;margin-bottom:8px}
+.mode-bar button{flex:1;border:none;background:#fff;border-radius:16px;padding:9px 3px;
+  font-size:.78rem;font-weight:bold;color:#66809b;box-shadow:0 2px 6px rgba(0,0,0,.06);
+  cursor:pointer;font-family:inherit;transition:.15s;white-space:nowrap}
+.mode-bar button.active{background:linear-gradient(135deg,#5ab0ff,#3a7bd5);color:#fff;transform:translateY(-1px)}
+.tip{text-align:center;font-size:.74rem;color:#9ab;margin:2px 0 10px}
+.tab-bar{display:flex;gap:6px;margin:0 auto 12px;max-width:520px;background:#fff;border-radius:20px;padding:6px;box-shadow:0 4px 14px rgba(0,0,0,.1)}
+.tab-bar a{flex:1;text-align:center;text-decoration:none;padding:13px 6px;border-radius:16px;font-weight:bold;font-size:.95rem;color:#66809b;transition:.15s}
+.tab-bar a.active{background:linear-gradient(135deg,#5ab0ff,#3a7bd5);color:#fff;box-shadow:0 3px 10px rgba(58,123,213,.35)}
+.title-row{display:flex;align-items:center;justify-content:center;gap:10px;margin:4px 0 10px}
+.title-row #title{font-size:1.05rem;color:#30506e;font-weight:bold}
+#setDefault{border:none;background:#fff;border-radius:14px;padding:7px 12px;font-size:.76rem;font-weight:bold;color:#f5a623;box-shadow:0 2px 6px rgba(0,0,0,.08);cursor:pointer;font-family:inherit}
+#setDefault.on{background:linear-gradient(135deg,#ffd76b,#f5a623);color:#fff}
+.chat{display:flex;flex-direction:column;gap:9px;padding:4px}
+.bubble{position:relative;max-width:84%;padding:10px 14px;border-radius:18px;cursor:pointer;transition:.18s;
+  box-shadow:0 3px 10px rgba(0,0,0,.07)}
+.bubble.A{align-self:flex-start;background:#dff0ff;border-bottom-left-radius:4px}
+.bubble.B{align-self:flex-end;background:#ffe9dc;border-bottom-right-radius:4px}
+.bubble .who{font-size:.68rem;font-weight:bold;color:#8aa;margin-bottom:3px}
+.bubble .row{display:flex;align-items:center;gap:9px}
+.bubble .em{font-size:1.75rem;line-height:1;flex:0 0 auto}
+.bubble .en{font-size:1.05rem;font-weight:bold;color:#2b4356;line-height:1.3;flex:1}
+.bubble .cn{font-size:.75rem;color:#9ab;margin-top:3px}
+.bubble.playing{transform:scale(1.04);box-shadow:0 6px 20px rgba(58,123,213,.35);outline:3px solid rgba(90,176,255,.45)}
+.bubble.mine{background:linear-gradient(135deg,#fff9e8,#ffefd0);border:2.5px dashed #f5a623}
+.bubble.waiting{outline:4px solid #7ed957;transform:scale(1.05);box-shadow:0 6px 20px rgba(126,217,87,.55)}
+.bubble.waiting::before{content:"🎤";position:absolute;top:-16px;right:-8px;font-size:1.7rem;animation:micpulse .85s ease-in-out infinite;filter:drop-shadow(0 2px 4px rgba(0,0,0,.25))}
+.bubble.waiting::after{content:attr(data-cd);position:absolute;top:-10px;left:-10px;min-width:26px;height:26px;line-height:26px;text-align:center;padding:0 4px;background:#7ed957;color:#fff;font-size:.85rem;font-weight:bold;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+@keyframes micpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.35) rotate(-12deg)}}
+.controls{position:fixed;bottom:0;left:0;right:0;padding:12px;display:flex;gap:10px;
+  background:linear-gradient(transparent,#fff8f0 32%)}
+.controls button{border:none;border-radius:20px;padding:14px;font-size:1rem;font-weight:bold;
+  color:#fff;font-family:inherit;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.15)}
+#playAll{flex:1;background:linear-gradient(135deg,#7ed957,#35b558)}
+#stopBtn{flex:0 0 84px;background:linear-gradient(135deg,#ffb26b,#ff8c42)}
+</style>
+</head>
+<body>
+<div class="tab-bar">
+  <a href="index.html">📇 单词闪卡</a>
+  <a href="conversation.html" class="active">💬 对话练习</a>
+</div>
+<div class="title-row">
+  <span id="title">💬 对话练习</span>
+  <button id="setDefault">⭐ 设为默认</button>
+</div>
+<div class="unit-bar" id="unitBar"></div>
+<div class="mode-bar" id="modeBar">
+  <button data-mode="listen" class="active">🎧 听</button>
+  <button data-mode="repeat">🔁 跟读</button>
+  <button data-mode="A" id="mA">🎭 演 A</button>
+  <button data-mode="B" id="mB">🎭 演 B</button>
+</div>
+<div class="tip" id="tip">点句子听发音 · 选「我演」练对话</div>
+<div class="chat" id="chat"></div>
+<div class="controls">
+  <button id="playAll">▶ 播放全部</button>
+  <button id="stopBtn">■ 停</button>
+</div>
+<script>
+let DATA = null, CUR = null, mode = "listen", curAudio = null;
+let DEFAULT_UNIT = localStorage.getItem("hot2_conv_default") || "u5";
+const chat = document.getElementById("chat");
+const tip = document.getElementById("tip");
+const $ = id => document.getElementById(id);
+
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function audioPath(unit, i){ return "conv/" + unit + "_" + String(i + 1).padStart(2, "0") + ".mp3"; }
+function castOf(spk){ return (DATA[CUR].cast && DATA[CUR].cast[spk]) || spk; }
+
+function renderUnits(){
+  const bar = $("unitBar");
+  bar.innerHTML = "";
+  Object.keys(DATA).forEach(u => {
+    const b = document.createElement("button");
+    b.textContent = "U" + DATA[u].unit + (u === DEFAULT_UNIT ? " ⭐" : "");
+    if (u === CUR) b.classList.add("active");
+    b.onclick = () => { CUR = u; mode = "listen"; stopAudio(); renderUnits(); render(); };
+    bar.appendChild(b);
+  });
+}
+
+function render(){
+  const d = DATA[CUR];
+  $("title").textContent = "💬 U" + d.unit + " · " + d.title;
+  $("mA").textContent = "🎭 我演 " + castOf("A");
+  $("mB").textContent = "🎭 我演 " + castOf("B");
+  document.querySelectorAll("#modeBar button").forEach(x =>
+    x.classList.toggle("active", x.dataset.mode === mode));
+  chat.innerHTML = "";
+  d.lines.forEach((ln, i) => {
+    const el = document.createElement("div");
+    const mine = (mode === ln.spk);
+    el.className = "bubble " + ln.spk + (mine ? " mine" : "");
+    el.innerHTML = '<div class="who">' + esc(castOf(ln.spk)) + (mine ? "（你）" : "") + '</div>' +
+      '<div class="row"><span class="em">' + (ln.em || "") + '</span>' +
+      '<span class="en">' + esc(ln.en) + '</span></div>' +
+      '<div class="cn">' + esc(ln.cn || "") + '</div>';
+    el.onclick = () => playLine(i);
+    chat.appendChild(el);
+  });
+  tip.textContent =
+    mode === "listen" ? "点句子听发音 · 点「▶ 播放全部」连播" :
+    mode === "repeat" ? "点「▶ 播放全部」：一句一句播，每句停 3 秒，孩子跟着念" :
+    "轮到你（" + castOf(mode) + "）时停下 3 秒让你读 · 点你的句子可听示范";
+  updateDefaultBtn();
+}
+
+function updateDefaultBtn(){
+  const on = (CUR === DEFAULT_UNIT);
+  $("setDefault").textContent = on ? "⭐ 默认单元" : "⭐ 设为默认";
+  $("setDefault").classList.toggle("on", on);
+}
+
+function stopAudio(){
+  if (curAudio){ try { curAudio.pause(); } catch(e){} curAudio = null; }
+  [...chat.children].forEach(el => el.classList.remove("playing"));
+}
+
+function playLine(i){
+  stopAudio();
+  const a = new Audio(audioPath(CUR, i));
+  curAudio = a;
+  chat.children[i].classList.add("playing");
+  a.onended = a.onerror = () => { if (chat.children[i]) chat.children[i].classList.remove("playing"); };
+  a.play().catch(()=>{});
+}
+
+let audioCtx = null;
+function ting(){
+  try {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === "suspended") audioCtx.resume();
+    [880, 1320].forEach((f, k) => {
+      const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.type = "sine"; o.frequency.value = f;
+      o.connect(g); g.connect(audioCtx.destination);
+      const t0 = audioCtx.currentTime + k * 0.14;
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.exponentialRampToValueAtTime(0.3, t0 + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.3);
+      o.start(t0); o.stop(t0 + 0.32);
+    });
+  } catch(e){}
+}
+
+function waitAt(idx, sec, cb){
+  const el = chat.children[idx];
+  if (el){ el.classList.add("waiting"); el.setAttribute("data-cd", sec); }
+  ting();
+  let t = sec;
+  const iv = setInterval(() => {
+    t--;
+    if (t <= 0){ clearInterval(iv); if (el){ el.classList.remove("waiting"); el.removeAttribute("data-cd"); } cb(); }
+    else if (el) el.setAttribute("data-cd", t);
+  }, 1000);
+}
+
+function playAll(){
+  stopAudio();
+  const lines = DATA[CUR].lines, n = lines.length;
+  let i = 0;
+  const step = () => {
+    if (i >= n) return;
+    const idx = i, el = chat.children[idx];
+    const mine = (mode === lines[idx].spk);
+    if (mine && mode !== "listen") {                 // 扮演模式：轮到你 → 停 3 秒让你读
+      waitAt(idx, 3, () => { i++; step(); });
+      return;
+    }
+    const a = new Audio(audioPath(CUR, idx));
+    curAudio = a;
+    if (el) el.classList.add("playing");
+    a.onended = a.onerror = () => {
+      if (el) el.classList.remove("playing");
+      if (mode === "repeat") waitAt(idx, 3, () => { i++; step(); });   // 跟读：播完停 3 秒
+      else { i++; step(); }
+    };
+    a.play().catch(() => { if (el) el.classList.remove("playing"); i++; step(); });
+  };
+  step();
+}
+
+document.querySelectorAll("#modeBar button").forEach(b => {
+  b.onclick = () => { mode = b.dataset.mode; stopAudio(); render(); };
+});
+$("playAll").onclick = playAll;
+$("stopBtn").onclick = stopAudio;
+$("setDefault").onclick = () => {
+  DEFAULT_UNIT = CUR;
+  localStorage.setItem("hot2_conv_default", CUR);
+  renderUnits();
+  updateDefaultBtn();
+  tip.textContent = "✅ U" + DATA[CUR].unit + " 已设为默认，下次打开直接到这课";
+};
+
+fetch("conv-data.json").then(r => r.json()).then(d => {
+  DATA = d;
+  CUR = d[DEFAULT_UNIT] ? DEFAULT_UNIT : Object.keys(d)[0];
+  renderUnits();
+  render();
+}).catch(() => { tip.textContent = "数据加载失败，返回重试"; });
+</script>
+</body>
+</html>

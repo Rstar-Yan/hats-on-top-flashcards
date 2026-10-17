@@ -1,0 +1,111 @@
+{
+  "u1": {
+    "unit": 1, "title": "This Is My School", "titleCn": "这是我的学校",
+    "cast": {"A": "Pam", "B": "Sam"},
+    "lines": [
+      {"spk": "A", "em": "👋", "en": "Hello! What's your name?", "cn": "你好！你叫什么名字？"},
+      {"spk": "B", "em": "🙋‍♂️", "en": "My name is Sam. What's your name?", "cn": "我叫 Sam。你叫什么名字？"},
+      {"spk": "A", "em": "🙋‍♀️", "en": "My name is Pam.", "cn": "我叫 Pam。"},
+      {"spk": "B", "em": "😊", "en": "Hello, Pam!", "cn": "你好，Pam！"},
+      {"spk": "A", "em": "🎒", "en": "Hello!", "cn": "你好！"}
+    ]
+  },
+  "u2": {
+    "unit": 2, "title": "My Toys", "titleCn": "我的玩具",
+    "cast": {"A": "Cassie", "B": "Sam"},
+    "lines": [
+      {"spk": "A", "em": "🧸", "en": "What do you have?", "cn": "你有什么？"},
+      {"spk": "B", "em": "🚗", "en": "I have a yellow car.", "cn": "我有一辆黄色的汽车。"},
+      {"spk": "A", "em": "❓", "en": "What do you have, Sam?", "cn": "Sam，你有什么？"},
+      {"spk": "B", "em": "✈️", "en": "I have a blue plane.", "cn": "我有一架蓝色的飞机。"},
+      {"spk": "A", "em": "🐦", "en": "I have a white bird. Let's play!", "cn": "我有一只白色的小鸟。一起玩吧！"},
+      {"spk": "B", "em": "👍", "en": "Okay!", "cn": "好！"}
+    ]
+  },
+  "u3": {
+    "unit": 3, "title": "All About Me", "titleCn": "关于我自己",
+    "cast": {"A": "Teacher", "B": "Child"},
+    "lines": [
+      {"spk": "B", "em": "😣", "en": "Ow! Ow!", "cn": "哎呀！哎呀！"},
+      {"spk": "A", "em": "❓", "en": "What's wrong?", "cn": "怎么了？"},
+      {"spk": "B", "em": "🤕", "en": "My head hurts.", "cn": "我的头好痛。"},
+      {"spk": "A", "em": "🩹", "en": "Oh, I'm sorry. Let's try this.", "cn": "哦，很抱歉。我们试试这个。"},
+      {"spk": "B", "em": "😊", "en": "Thank you.", "cn": "谢谢。"}
+    ]
+  },
+  "u4": {
+    "unit": 4, "title": "At Home", "titleCn": "在家里",
+    "cast": {"A": "Friend", "B": "Child"},
+    "lines": [
+      {"spk": "A", "em": "🎂", "en": "Happy birthday!", "cn": "生日快乐！"},
+      {"spk": "B", "em": "😄", "en": "Thank you!", "cn": "谢谢！"},
+      {"spk": "A", "em": "🎈", "en": "How old are you?", "cn": "你几岁了？"},
+      {"spk": "B", "em": "✋", "en": "I'm five.", "cn": "我五岁了。"},
+      {"spk": "A", "em": "🎉", "en": "Happy birthday!", "cn": "生日快乐！"}
+    ]
+  },
+  "u5": {
+    "unit": 5, "title": "I Like Food", "titleCn": "我喜欢食物",
+    "cast": {"A": "Friend", "B": "Child"},
+    "lines": [
+      {"spk": "A", "em": "🥞", "en": "Do you like pancakes?", "cn": "你喜欢薄饼吗？"},
+      {"spk": "B", "em": "👍", "en": "Yes, I do.", "cn": "是的，我喜欢。"},
+      {"spk": "A", "em": "🧃", "en": "Do you like orange juice?", "cn": "你喜欢橙汁吗？"},
+      {"spk": "B", "em": "👎", "en": "No, I don't.", "cn": "不，我不喜欢。"},
+      {"spk": "A", "em": "🥛", "en": "Do you like milk?", "cn": "你喜欢牛奶吗？"},
+      {"spk": "B", "em": "😋", "en": "Yes, I do.", "cn": "是的，我喜欢。"}
+    ]
+  },
+  "u6": {
+    "unit": 6, "title": "Clothes", "titleCn": "衣服",
+    "cast": {"A": "Friend", "B": "Child"},
+    "lines": [
+      {"spk": "A", "em": "👀", "en": "What are you wearing?", "cn": "你穿着什么？"},
+      {"spk": "B", "em": "👨‍🍳", "en": "I'm wearing a chef's hat.", "cn": "我戴着一顶厨师帽。"},
+      {"spk": "A", "em": "❤️", "en": "I like it.", "cn": "我喜欢。"},
+      {"spk": "B", "em": "😊", "en": "Thank you.", "cn": "谢谢。"},
+      {"spk": "A", "em": "👀", "en": "What are you wearing?", "cn": "你穿着什么？"},
+      {"spk": "B", "em": "🕶️", "en": "I'm wearing sunglasses.", "cn": "我戴着太阳镜。"},
+      {"spk": "A", "em": "❤️", "en": "I like them.", "cn": "我喜欢。"},
+      {"spk": "B", "em": "😊", "en": "Thank you.", "cn": "谢谢。"}
+    ]
+  },
+  "u7": {
+    "unit": 7, "title": "The Farm", "titleCn": "农场",
+    "cast": {"A": "Friend", "B": "Child"},
+    "lines": [
+      {"spk": "A", "em": "❓", "en": "What are you doing?", "cn": "你在做什么？"},
+      {"spk": "B", "em": "🍓", "en": "I'm picking strawberries.", "cn": "我在摘草莓。"},
+      {"spk": "A", "em": "🙋", "en": "Can I help?", "cn": "我能帮忙吗？"},
+      {"spk": "B", "em": "👍", "en": "Sure!", "cn": "当然可以！"},
+      {"spk": "A", "em": "❓", "en": "What are you doing?", "cn": "你在做什么？"},
+      {"spk": "B", "em": "🥕", "en": "I'm picking carrots.", "cn": "我在拔胡萝卜。"},
+      {"spk": "A", "em": "🙋", "en": "Can I help?", "cn": "我能帮忙吗？"},
+      {"spk": "B", "em": "🤝", "en": "Sure!", "cn": "当然可以！"}
+    ]
+  },
+  "u8": {
+    "unit": 8, "title": "Going Places", "titleCn": "去各种地方",
+    "cast": {"A": "Child", "B": "Mom"},
+    "lines": [
+      {"spk": "A", "em": "🙋", "en": "Mom, where are you?", "cn": "妈妈，你在哪里？"},
+      {"spk": "B", "em": "✈️", "en": "I'm at work. I'm in the plane.", "cn": "我在上班。我在飞机里。"},
+      {"spk": "A", "em": "🙋", "en": "Dad, where are you?", "cn": "爸爸，你在哪里？"},
+      {"spk": "B", "em": "🏫", "en": "I'm at work. I'm in the classroom.", "cn": "我在上班。我在教室里。"},
+      {"spk": "A", "em": "🙋", "en": "Mom, where are you?", "cn": "妈妈，你在哪里？"},
+      {"spk": "B", "em": "📚", "en": "I'm at work. I'm in the library. Shhh!", "cn": "我在上班。我在图书馆。嘘！"}
+    ]
+  },
+  "u9": {
+    "unit": 9, "title": "Good Night", "titleCn": "晚安",
+    "cast": {"A": "Friend", "B": "Child"},
+    "lines": [
+      {"spk": "A", "em": "🐭", "en": "Where is the mouse?", "cn": "老鼠在哪里？"},
+      {"spk": "B", "em": "🌳", "en": "The mouse is under the tree.", "cn": "老鼠在树底下。"},
+      {"spk": "A", "em": "❓", "en": "What is it doing?", "cn": "它在做什么？"},
+      {"spk": "B", "em": "😴", "en": "It's sleeping.", "cn": "它在睡觉。"},
+      {"spk": "A", "em": "🦉", "en": "Where is the owl?", "cn": "猫头鹰在哪里？"},
+      {"spk": "B", "em": "😴", "en": "The owl is in the tree. It's sleeping.", "cn": "猫头鹰在树上。它在睡觉。"}
+    ]
+  }
+}
