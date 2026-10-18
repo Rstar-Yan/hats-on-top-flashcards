@@ -59,7 +59,7 @@ function play(i) {
   document.querySelectorAll('.card.on').forEach(e => e.classList.remove('on'));
   grid.children[i].classList.add('on');
   status.textContent = `第 ${i+1}/42 个：${letter}  ${ipa}`;
-  cur = new Audio('phonics/' + f + '.mp3');
+  cur = new Audio('phonics/' + f + '.mp3?v=2');
   cur.onended = () => {
     if (seq) { if (i + 1 < SOUNDS.length) setTimeout(() => play(i+1), 350); else { seq = false; status.textContent = '放完了'; } }
   };

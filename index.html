@@ -771,7 +771,7 @@ function playPhonics(word, blocks) {
     const el = wrap.children[i];
     if (el) el.classList.add('on');
     if (!blocks[i][1]) { i++; setTimeout(step, 120); return; }   // 静音 e：只看不听
-    const a = new Audio('phonics/' + toSlug(blocks[i][1]) + '.mp3');
+    const a = new Audio('phonics/' + toSlug(blocks[i][1]) + '.mp3?v=2');
     phAudio = a;
     const done = () => { i++; setTimeout(step, 90); };
     a.onended = done; a.onerror = done;
